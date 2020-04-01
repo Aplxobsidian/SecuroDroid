@@ -4,15 +4,242 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@drawable/bggrid"
+    >
 
+
+<TextView
+    android:id="@+id/securodroid_title1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="SecuroDroid is"
+    android:textSize="28sp"
+    android:layout_alignParentTop="true"
+    android:layout_marginTop="20dp"
+    android:layout_centerHorizontal="true"
+    android:textColor="@android:color/white"
+    android:background="@android:color/darker_gray"
+    />
+
+    <ImageView
+        android:id="@+id/not_protected_img"
+        android:layout_width="150dp"
+        android:layout_height="120dp"
+        android:layout_below="@id/securodroid_title1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/lock"
+        />
+    <ImageView
+        android:id="@+id/is_protected_img"
+        android:layout_width="150dp"
+        android:layout_height="120dp"
+        android:layout_below="@id/securodroid_title1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/lock_green"
+        android:visibility="invisible"
+        />
     <TextView
+        android:id="@+id/protect_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_below="@id/not_protected_img"
+        android:layout_centerHorizontal="true"
+        android:text="@string/not_protected"
+        android:textColor="@android:color/white"
+        android:background="@android:color/darker_gray"
+        android:textSize="18sp"
+        />
+    <Button
+        android:id="@+id/enable_function_btn"
+        android:text="ENABLE"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/protect_status"
+        android:layout_marginTop="20dp"
+        android:textColor="@android:color/white"
+        android:background="@drawable/circle_green"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="65dp"
+
+        />
+    <Button
+        android:id="@+id/disable_function_btn"
+        android:text="DISABLE"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/protect_status"
+        android:layout_marginTop="20dp"
+        android:textColor="@android:color/white"
+        android:background="@drawable/circle_red"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="65dp"
+        />
+
+    <GridLayout
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/enable_function_btn"
+        android:id="@+id/mainGrid"
+        android:columnCount="2"
+        android:rowCount="3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:alignmentMode="alignMargins"
+        android:columnOrderPreserved="false"
+        >
+
+        <androidx.cardview.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_gravity="center_horizontal"
+
+            card_view:cardCornerRadius="8dp"
+            card_view:cardBackgroundColor="@color/colorAccent"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+
+            android:layout_columnWeight="1"
+
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            card_view:cardElevation="8dp"
+
+
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:textAlignment="center"
+                android:text="USB PLUG"
+
+                android:textColor="@android:color/white"
+                />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            card_view:cardCornerRadius="8dp"
+            card_view:cardBackgroundColor="@color/colorAccent"
+            android:layout_columnWeight="1"
+
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            card_view:cardElevation="8dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HEADPHONE PLUG"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:textAlignment="center"
+
+                />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            card_view:cardCornerRadius="8dp"
+            card_view:cardBackgroundColor="@color/colorAccent"
+
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            card_view:cardElevation="8dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MOVEMENT"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:textAlignment="center"
+
+                />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            card_view:cardCornerRadius="8dp"
+            card_view:cardBackgroundColor="@color/colorAccent"
+
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            card_view:cardElevation="8dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SHUTDOWN"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:textAlignment="center"
+                />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            card_view:cardCornerRadius="8dp"
+            card_view:cardBackgroundColor="@color/colorAccent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            card_view:cardElevation="8dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AIRPLANE MODE"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:textAlignment="center"
+
+                />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            card_view:cardCornerRadius="8dp"
+            card_view:cardBackgroundColor="@color/colorAccent"
+
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            card_view:cardElevation="8dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AUTO START"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:textAlignment="center"
+                />
+        </androidx.cardview.widget.CardView>
+
+    </GridLayout>
 
 </RelativeLayout>

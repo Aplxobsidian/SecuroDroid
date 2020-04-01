@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">SecuroDroid</string>
+    <string name="is_protected">Currently Protecting Your Device</string>
+    <string name="not_protected">Temporarily Disabled on Your Device</string>
+
 </resources>

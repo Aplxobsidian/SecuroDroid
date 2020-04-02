@@ -13,7 +13,6 @@ public class StartActivityOnBoot extends BroadcastReceiver {
             Intent i = new Intent(context, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
-
         }
     }
 }

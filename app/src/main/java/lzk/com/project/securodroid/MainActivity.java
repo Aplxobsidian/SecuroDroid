@@ -3,6 +3,7 @@ package lzk.com.project.securodroid;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -82,6 +83,10 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
             @Override
             public void onClick(View v) {
 
+
+
+                    stopProtect();
+
                     PROTECT_STATUS=false;
                     ALARM_STATUS=false;
                     text_status.setText(R.string.not_protected);
@@ -93,9 +98,7 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
         btn_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //text_status.setText("SETTINGS");
                 openSettingsDialog();
-
             }
         });
     }
@@ -192,32 +195,35 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
     }
 
     protected void protectProcess(){
-        /*
-        while (PROTECT_STATUS){
 
-            if (USB_PLUG){
+        Intent serviceJobIntent = new Intent(this,MainJobIntentService.class);
+        Intent serviceIntent = new Intent(this, MainService.class);
+        serviceIntent.putExtra("usb",USB_PLUG);
+        serviceIntent.putExtra("headphone",HEADPHONE_PLUG);
+        serviceIntent.putExtra("move",MOVEMENT);
+        serviceIntent.putExtra("Shut",SHUTDOWN);
+        serviceIntent.putExtra("airplane",AIRPLANE_MODE);
+        serviceIntent.putExtra("autostart",AUTOSTART);
 
-            }
-            if (HEADPHONE_PLUG){
+        serviceJobIntent.putExtra("usb",USB_PLUG);
+        serviceJobIntent.putExtra("headphone",HEADPHONE_PLUG);
+        serviceJobIntent.putExtra("move",MOVEMENT);
+        serviceJobIntent.putExtra("Shut",SHUTDOWN);
+        serviceJobIntent.putExtra("airplane",AIRPLANE_MODE);
+        serviceJobIntent.putExtra("autostart",AUTOSTART);
 
-            }
-            if (MOVEMENT){
 
-            }
-            if(SHUTDOWN){
+        MainJobIntentService.enqueueWork(this,serviceJobIntent);
 
-            }
-            if (AIRPLANE_MODE){
+        startService(serviceIntent);
 
-            }
-            if (AUTOSTART){
-
-            }
-
-        }
-        */
     }
 
+    protected void stopProtect(){
+        Intent serviceIntent = new Intent(this, MainService.class);
+        stopService(serviceIntent);
+
+    }
     protected void alarm(){
 
     }
@@ -226,18 +232,41 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
 
     }
 
+
+
+    /**
+    *  public void openSettingsDialog()
+    *  The function that open the settings dialog
+    *  user can input their desired phone number and email address
+    *
+    */
+
     public void openSettingsDialog(){
 
         SettingsDialog settingsDialog = new SettingsDialog();
         settingsDialog.show(getSupportFragmentManager(),"Settings");
-
     }
 
+    /**
+     *  public void applyTexts(String phonenum, String email)
+     *  The function that return the settings dialog content to the class strings
+     * @param phonenum User set phone number
+     * @param email User set email address
+     *
+     */
     @Override
     public void applyTexts(String phonenum, String email) {
-
         callPhone=phonenum;
         mailAddress=email;
         Toast.makeText(MainActivity.this,""+phonenum+email,Toast.LENGTH_SHORT).show();
     }
 }
+
+/* Template */
+
+/*
+   Function:
+   The function
+   u
+
+ */

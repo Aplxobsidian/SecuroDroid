@@ -1,10 +1,21 @@
 package lzk.com.project.securodroid;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +25,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements SettingsDialog.SettingsDialogListener {
+
+    private int PERMISSION_FINELOC_CODE = 1;
+    private int PERMISSION_COARSELOC_CODE = 2;
+    private int PERMISSION_INTERNET_CODE = 3;
+    private int PERMISSION_CALL_CODE= 4;
+    protected LocationManager locationManager;
+
 
     GridLayout mainGrid;
 
@@ -36,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
     protected String callPhone;
     protected String mailAddress;
 
+
+    protected double latitude,longitude;
 
     private boolean PROTECT_STATUS=false;
     private boolean ALARM_STATUS=false;
@@ -67,7 +87,56 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
 
         img_enable = findViewById(R.id.is_protected_img);
         img_disable = findViewById(R.id.not_protected_img);
+        final LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+               latitude=location.getLatitude();
+               longitude=location.getLongitude();
+            }
 
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
+
+        if (    ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.ACCESS_COARSE_LOCATION)==PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.INTERNET)==PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.CALL_PHONE)==PackageManager.PERMISSION_GRANTED
+        ){
+
+            try{
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else{
+            requestFineLocPermission();
+            requestCoarseLocPermission();
+            requestInternetPermission();
+            requestCallPermission();
+        }
+
+
+        /**
+         *  btn_enable.setOnClickListener
+         *  setOnClickListener for enable service
+         *
+         */
         btn_enable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,22 +148,29 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
             }
         });
 
+        /**
+         *  btn_disable.setOnClickListener
+         *  setOnClickListener for disable button
+         *
+         */
         btn_disable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-
-
                     stopProtect();
-
                     PROTECT_STATUS=false;
                     ALARM_STATUS=false;
                     text_status.setText(R.string.not_protected);
                     img_disable.setVisibility(View.VISIBLE);
                     img_enable.setVisibility(View.INVISIBLE);
-
             }
         });
+
+        /**
+         *  btn_settings.setOnClickListener
+         *  setOnClickListener for settings button
+         *
+         */
         btn_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,6 +179,12 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
         });
     }
 
+
+    /**
+     *  private void setToggleEvent(GridLayout mainGrid)
+     *  The function that is used for toggle grids, the actual usage
+     * @param mainGrid The grids in user layout
+     */
     private void setToggleEvent(GridLayout mainGrid) {
         for (int i=0; i<mainGrid.getChildCount();i++) {
             final CardView cardView = (CardView) mainGrid.getChildAt(i);
@@ -178,6 +260,11 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
         }
     }
 
+    /**
+     *  private void setSingleEvent(GridLayout mainGrid)
+     *  The function that is used for single testing, not actual use
+     * @param mainGrid The grids in user layout
+     */
     private void setSingleEvent(GridLayout mainGrid) {
 
         for (int i=0; i<mainGrid.getChildCount();i++){
@@ -212,9 +299,16 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
         serviceJobIntent.putExtra("airplane",AIRPLANE_MODE);
         serviceJobIntent.putExtra("autostart",AUTOSTART);
 
+        serviceJobIntent.putExtra("pnum",callPhone);
+        serviceJobIntent.putExtra("mail",mailAddress);
+
+        serviceJobIntent.putExtra("latitude",latitude);
+        serviceJobIntent.putExtra("longitude",longitude);
+
+
+
 
         MainJobIntentService.enqueueWork(this,serviceJobIntent);
-
         startService(serviceIntent);
 
     }
@@ -260,13 +354,175 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
         mailAddress=email;
         Toast.makeText(MainActivity.this,""+phonenum+email,Toast.LENGTH_SHORT).show();
     }
+
+
+    public void autostartset(boolean bl){
+        this.AUTOSTART= bl == true;
+    }
+
+
+    private void requestFineLocPermission(){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION)){
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Permission needed")
+                    .setMessage("This permission is needed to let us know the survey position and differentiate these positions, no privacy info is gathered")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},PERMISSION_FINELOC_CODE);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
+
+
+        }else{
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},PERMISSION_FINELOC_CODE);
+        }
+    }
+
+    private void requestCoarseLocPermission(){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_COARSE_LOCATION)){
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Permission needed")
+                    .setMessage("This permission is needed to let us know the survey position and differentiate these positions, no privacy info is gathered")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},PERMISSION_COARSELOC_CODE);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
+
+
+        }else{
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},PERMISSION_COARSELOC_CODE);
+        }
+    }
+
+    private void requestInternetPermission(){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.INTERNET)){
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Permission needed")
+                    .setMessage("This permission is needed to let us know the survey position and differentiate these positions, no privacy info is gathered")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.INTERNET},PERMISSION_INTERNET_CODE);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
+
+
+        }else{
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.INTERNET},PERMISSION_INTERNET_CODE);
+        }
+    }
+
+    private void requestCallPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.CALL_PHONE)){
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Permission needed")
+                    .setMessage("This permission is needed to make emergency calls, no privacy info is gathered")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.CALL_PHONE},PERMISSION_CALL_CODE);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
+
+
+        }else{
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CALL_PHONE},PERMISSION_CALL_CODE);
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this,"FINE LOCATION Granted",Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(this,"FINE LOCATION Not Granted",Toast.LENGTH_SHORT).show();
+
+                }
+                return;
+            }
+            case 2:{
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this,"COARSE LOCATION Granted",Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(this,"COARSE LOCATION Not Granted",Toast.LENGTH_SHORT).show();
+
+                }
+                return;
+
+            }
+            case 3:{
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this,"INTERNET LOCATION Granted",Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(this,"INTERNET LOCATION Not Granted",Toast.LENGTH_SHORT).show();
+
+                }
+                return;
+            }
+
+            case 4:{
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this,"CALL  Granted",Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(this,"CALL Not Granted",Toast.LENGTH_SHORT).show();
+
+                }
+                return;
+            }
+            default:
+                throw new IllegalStateException("Unexpected value: " + requestCode);
+        }
+    }
+
+
 }
-
-/* Template */
-
-/*
-   Function:
-   The function
-   u
-
- */

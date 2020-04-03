@@ -6,6 +6,11 @@ import android.content.Intent;
 
 public class StartActivityOnBoot extends BroadcastReceiver {
 
+    /**
+     * Auto Start On Boot onReceive Receiver
+     * @param context The context
+     * @param intent The Intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         if(Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())){

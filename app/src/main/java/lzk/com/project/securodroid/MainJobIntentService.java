@@ -25,17 +25,29 @@ import androidx.core.app.JobIntentService;
 public class MainJobIntentService extends JobIntentService {
     private static final String TAG = "MainJobIntentService";
 
+    /**
+     * static void enqueueWork(Context context, Intent work) : make work enqueued
+     * @param context Context
+     * @param work work
+     */
     static void enqueueWork(Context context, Intent work) {
         enqueueWork(context, MainJobIntentService.class, 123, work);
     }
 
 
+    /**
+     * onCreate Method
+     */
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate: ");
     }
 
+    /**
+     * protected void onHandleWork(@NonNull Intent intent) : The main handle
+     * @param intent Intent
+     */
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
         Log.d(TAG, "onHandleWork: ");
@@ -116,12 +128,29 @@ public class MainJobIntentService extends JobIntentService {
         }
     }
 
+    /**
+     * To Catch Movements
+     */
     private void catchMovement() {
-    }
+        try{
+            Log.d(TAG, "catchMovement: ");
+        }catch (Exception e){
 
+        }
+    }
+    /**
+     * To Catch Shutdowns
+     */
     private void catchShutdown() {
-    }
+        try{
+            Log.d(TAG, "catchShutdown: ");
+        }catch (Exception e){
 
+        }
+    }
+    /**
+     * To Sound Alarms
+     */
     private void alarm(boolean status) {
 
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.alarm);
@@ -143,6 +172,13 @@ public class MainJobIntentService extends JobIntentService {
 
     }
 
+    /**
+     * private void sendtrack(String pnum, String mail, double latitude, double longitude): Send Tracking Information
+     * @param pnum Phone Number
+     * @param mail Mail
+     * @param latitude Latitude
+     * @param longitude Longitude
+     */
     private void sendtrack(String pnum, String mail, double latitude, double longitude) {
 
         Intent phonecall = new Intent(Intent.ACTION_CALL);
@@ -155,19 +191,29 @@ public class MainJobIntentService extends JobIntentService {
 
     }
 
+    /**
+     * default onDestroy()
+     */
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy: ");
         super.onDestroy();
     }
 
-
+    /**
+     * default onStopCurrentWork()
+     */
     @Override
     public boolean onStopCurrentWork() {
         Log.d(TAG, "onStopCurrentWork: ");
         return super.onStopCurrentWork();
     }
 
+    /**
+     * public void autostartset(boolean status)
+     * Check and make auto start set
+     * @param status Auto start Status
+     */
     public void autostartset(boolean status){
         if (status){
 

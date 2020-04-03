@@ -19,6 +19,11 @@ public class SettingsDialog extends AppCompatDialogFragment {
     private SettingsDialogListener listener;
 
 
+    /**
+     * public Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
+     * @param savedInstanceState The saved InstanceState
+     * @return Return a dialog
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -56,6 +61,10 @@ public class SettingsDialog extends AppCompatDialogFragment {
 
     }
 
+    /**
+     * Dialog Passing onAttach
+     * @param context The context
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -67,6 +76,9 @@ public class SettingsDialog extends AppCompatDialogFragment {
         }
     }
 
+    /**
+     * The SettingsDialogListener interface
+     */
     public interface SettingsDialogListener{
         void applyTexts(String phonenum, String email);
     }

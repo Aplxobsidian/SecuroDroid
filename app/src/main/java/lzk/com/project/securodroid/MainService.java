@@ -16,6 +16,13 @@ public class MainService extends Service {
         super.onCreate();
     }
 
+    /**
+     * onStartCommand: Start Service Override
+     * @param intent The passing intent
+     * @param flags Some Flags
+     * @param startId startId
+     * @return return int codes
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -45,11 +52,20 @@ public class MainService extends Service {
     }
 
 
+    /**
+     * onDestroy default
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
     }
 
+
+    /**
+     * public IBinder onBind(Intent intent) : Default Binder
+     * @param intent Intent
+     * @return IBinder
+     */
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {

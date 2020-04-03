@@ -26,13 +26,23 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements SettingsDialog.SettingsDialogListener {
 
+    /**
+     * Permission Related Codes
+     */
     private int PERMISSION_FINELOC_CODE = 1;
     private int PERMISSION_COARSELOC_CODE = 2;
     private int PERMISSION_INTERNET_CODE = 3;
     private int PERMISSION_CALL_CODE= 4;
+
+    /**
+     * LocationManager
+     */
     protected LocationManager locationManager;
 
 
+    /**
+     * Interface Layout Elements
+     */
     GridLayout mainGrid;
 
     Button btn_enable;
@@ -44,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
     ImageView img_enable;
     ImageView img_disable;
 
+    /**
+     * Status Variables
+     */
     protected boolean USB_PLUG=false;
     protected boolean HEADPHONE_PLUG=false;
     protected boolean MOVEMENT=false;
@@ -51,15 +64,23 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
     protected boolean AIRPLANE_MODE=false;
     protected boolean AUTOSTART=false;
 
+    /**
+     * User-defined Variables
+     */
     protected String callPhone;
     protected String mailAddress;
 
-
+    /**
+     * Location Info
+     */
     protected double latitude,longitude;
 
     private boolean PROTECT_STATUS=false;
     private boolean ALARM_STATUS=false;
 
+    /**
+     * Reserved Codes
+     */
     protected int NUSB_PLUG=0;
     protected int NHEADPHONE_PLUG=1;
     protected int NMOVEMENT=2;
@@ -67,6 +88,10 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
     protected int NAIRPLANE_MODE=4;
     protected int NAUTOSTART=5;
 
+    /**
+     * Override Default onCreate Method.
+     * @param savedInstanceState Default savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +112,9 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
 
         img_enable = findViewById(R.id.is_protected_img);
         img_disable = findViewById(R.id.not_protected_img);
+        /*
+          LocationListener for Location Update
+         */
         final LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -111,12 +139,14 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
         };
 
 
-        if (    ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED &&
+        /*
+          Check Permissions
+         */
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.ACCESS_COARSE_LOCATION)==PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.INTERNET)==PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.CALL_PHONE)==PackageManager.PERMISSION_GRANTED
         ){
-
             try{
                 locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
@@ -132,10 +162,10 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
         }
 
 
-        /**
-         *  btn_enable.setOnClickListener
-         *  setOnClickListener for enable service
-         *
+        /*
+           btn_enable.setOnClickListener
+           setOnClickListener for enable service
+
          */
         btn_enable.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,10 +178,10 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
             }
         });
 
-        /**
-         *  btn_disable.setOnClickListener
-         *  setOnClickListener for disable button
-         *
+        /*
+           btn_disable.setOnClickListener
+           setOnClickListener for disable button
+
          */
         btn_disable.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,10 +196,10 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
             }
         });
 
-        /**
-         *  btn_settings.setOnClickListener
-         *  setOnClickListener for settings button
-         *
+        /*
+           btn_settings.setOnClickListener
+           setOnClickListener for settings button
+
          */
         btn_settings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,6 +311,10 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
 
     }
 
+    /**
+     * protected void protectProcess() The protective process
+     *
+     */
     protected void protectProcess(){
 
         Intent serviceJobIntent = new Intent(this,MainJobIntentService.class);
@@ -305,36 +339,25 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
         serviceJobIntent.putExtra("latitude",latitude);
         serviceJobIntent.putExtra("longitude",longitude);
 
-
-
-
         MainJobIntentService.enqueueWork(this,serviceJobIntent);
         startService(serviceIntent);
 
     }
 
+
+    /**
+     * protected void stopProtect() The stop protect process
+     */
     protected void stopProtect(){
         Intent serviceIntent = new Intent(this, MainService.class);
         stopService(serviceIntent);
-
     }
-    protected void alarm(){
-
-    }
-
-    protected void sendTrack(){
-
-    }
-
-
 
     /**
     *  public void openSettingsDialog()
     *  The function that open the settings dialog
     *  user can input their desired phone number and email address
-    *
     */
-
     public void openSettingsDialog(){
 
         SettingsDialog settingsDialog = new SettingsDialog();
@@ -356,11 +379,22 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
     }
 
 
+    /**
+     * public void autostartset(boolean bl) Set Auto start status
+     * @param bl Status boolean
+     */
     public void autostartset(boolean bl){
         this.AUTOSTART= bl == true;
     }
 
 
+    /**
+     * private void requestFineLocPermission()
+     * private void requestCoarseLocPermission()
+     * private void requestInternetPermission()
+     * private void requestCallPermission
+     * Request Multiple Permissions
+     */
     private void requestFineLocPermission(){
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION)){
 
@@ -470,6 +504,13 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
     }
 
 
+    /**
+     * public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+     * The override ReqPermissionResult Handler
+     * @param requestCode The request code
+     * @param permissions Permissions
+     * @param grantResults Grant results
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -523,6 +564,5 @@ public class MainActivity extends AppCompatActivity implements SettingsDialog.Se
                 throw new IllegalStateException("Unexpected value: " + requestCode);
         }
     }
-
 
 }
